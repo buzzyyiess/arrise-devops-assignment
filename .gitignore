@@ -1,0 +1,8 @@
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+*.zip
+*.log
+task1_2_ec2_backend/keys/*
+!task1_2_ec2_backend/keys/*.pub
