@@ -1,31 +1,41 @@
 # Arrise Solutions - DevOps Infrastructure Engineer III Assessment
-
-Environment-ready Terraform modules, IAM security policies, and architectural analysis.
+Environment ready Terraform modules, IAM security policies, and architectural analysis.
 
 ## Repository Layout
-- `task1_2_ec2_backend/`: Dynamic multi-instance EC2 module, IOPS config, S3 remote state, and DynamoDB lock.
-- `task3_iam_cross_account/`: Multi-account IAM isolation and least-privilege delegation.
-- `task4_least_privilege/`: Scoped CI IAM policy for ECR/ECS/S3.
-- `task5_bug_fix/`: Fixed Terraform configuration for cross-account STS delegation.
-- `NOTES.md`: Architectural decisions, failure root causes, and tradeoffs.
+- `task1_2_ec2_backend/`: Dynamic multi-instance EC2 provisioning, IOPS configuration, S3 remote state backend, and DynamoDB lock[cite: 1].
+- `task3_iam_cross_account/`: Multi-account IAM isolation, user groups, and cross-account delegation[cite: 1].
+- `task4_least_privilege/`: Scoped CI/CD IAM policy for ECR, ECS, and S3[cite: 1].
+- `task5_bug_fix/`: Corrected Terraform configuration for cross-account STS delegation[cite: 1].
+- `NOTES.md`: Architectural decisions, failure root causes, security trade-offs, and assignment answers[cite: 1].
 
-## Local Validation with LocalStack
-\`\`\`bash
-# 1. Start LocalStack
-localstack start -d. `seems like it needs to create account.
+## Architectural Notes & Rationale
+Please review **[NOTES.md](./NOTES.md)** for detailed technical analysis, lifecycle protection rationale, bug root-cause breakdown, and least-privilege scoping decisions[cite: 1].
 
-# 2. Bootstrap Local State S3 and DynamoDB
-awslocal s3 mb s3://arrise-tfstate-prod-ap-south-1 --region ap-south-1
-awslocal dynamodb create-table \
-  --table-name arrise-tfstate-locks \
-  --attribute-definitions AttributeName=LockID,AttributeType=S \
-  --key-schema AttributeName=LockID,KeyType=HASH \
-  --billing-mode PAY_PER_REQUEST \
-  --region ap-south-1
+## Local Validation (Zero-Dependency)
 
-# 3. Test Task 1 & 2
+All Terraform modules and IAM policies can be validated locally using standard tooling without incurring AWS costs or requiring active cloud credentials:
+
+```bash
+# 1. Export mock credentials for provider resolution
+export AWS_ACCESS_KEY_ID="mock_key"
+export AWS_SECRET_ACCESS_KEY="mock_secret"
+export AWS_DEFAULT_REGION="ap-south-1"
+
+# 2. Validate Task 1 & 2 (EC2 & Backend configuration)
 cd task1_2_ec2_backend
-tflocal init
-tflocal validate
-tflocal plan
-\`\`\`
+terraform init -backend=false
+terraform validate
+
+# 3. Validate Task 3 (Multi-Account IAM)
+cd ../task3_iam_cross_account
+terraform init
+terraform validate
+
+# 4. Validate Task 4 (Least-Privilege CI JSON Policy)
+cd ../task4_least_privilege
+python3 -m json.tool ci_iam_policy.json > /dev/null && echo "CI Policy JSON is Valid"
+
+# 5. Validate Task 5 (Bug Fix Verification)
+cd ../task5_bug_fix
+terraform init
+terraform validate
