@@ -1,6 +1,6 @@
-# Arrise Solutions / Pragmatic Play - DevOps Infrastructure Engineer III Assessment
+# Arrise Solutions - DevOps Infrastructure Engineer III Assessment
 
-Production-ready Terraform modules, IAM security policies, and architectural analysis.
+Environment-ready Terraform modules, IAM security policies, and architectural analysis.
 
 ## Repository Layout
 - `task1_2_ec2_backend/`: Dynamic multi-instance EC2 module, IOPS config, S3 remote state, and DynamoDB lock.
@@ -12,7 +12,7 @@ Production-ready Terraform modules, IAM security policies, and architectural ana
 ## Local Validation with LocalStack
 \`\`\`bash
 # 1. Start LocalStack
-localstack start -d
+localstack start -d. `seems like it needs to create account.
 
 # 2. Bootstrap Local State S3 and DynamoDB
 awslocal s3 mb s3://arrise-tfstate-prod-ap-south-1 --region ap-south-1
